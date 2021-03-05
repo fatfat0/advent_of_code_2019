@@ -13,10 +13,10 @@ data = get_data(day=2)
 # program_master = [1, 0, 0, 0, 99]  # answer should be 2
 # program_master = [2, 3, 0, 3, 99]  # answer should be 2
 # program_master = [2, 4, 4, 5, 99, 0]  # answer should be 2
-# program_master = [1, 1, 1, 4, 99, 5, 6, 0, 99]  # answer should be 30
-# computer = OpcodeComputer(list(program_master))
-# computer.run()
-# print(f"Test value left at position 0 is {computer[0]}")
+program_master = [99]  # answer should be 30
+computer = OpcodeComputer(list(program_master))
+computer.run()
+print(f"Test value left at position 0 is {computer[0]}")
 
 program_master = [int(entry) for entry in data.split(",")]
 

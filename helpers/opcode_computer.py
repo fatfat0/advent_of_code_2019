@@ -20,29 +20,43 @@ class OpcodeComputer:
 
         Note: As time goes on and more instructiosn get added, we would probably
         refactor this. Create a class for the various instructions and have them be
-        responsible for computing the correct results.
-
-        The "switch" statement for the opcodes would be put into a factory class /
-        factory method that creates instruction objects."""
+        responsible for computing the correct results."""
         while True:
             # Note: Right now we don't have to worry about endless loops, because the
             # current program doesn't jump around.
             if self.memory[self.instruction_pointer] == 99:
                 return
 
-            opcode, orig1, orig2, dest = self.memory[
-                self.instruction_pointer : self.instruction_pointer + 4
-            ]
-            op1, op2 = self.memory[orig1], self.memory[orig2]
+            opcode = self.memory[self.instruction_pointer]
+            dest = self.memory[self.instruction_pointer + 3]
 
-            if opcode == 1:
-                self.memory[dest] = op1 + op2
-            elif opcode == 2:
-                self.memory[dest] = op1 * op2
-            else:
-                raise ValueError("Don't know this opcode")
+            opcode_method = self._get_opcode_method(opcode)
+            self.memory[dest] = opcode_method()
 
             self.instruction_pointer += 4
+
+    def _get_opcode_method(self, opcode):
+        if opcode == 1:
+            return self._opcode_sum
+        if opcode == 2:
+            return self._opcode_product
+        else:
+            raise ValueError(opcode)
+
+    def _opcode_sum(self):
+        op1, op2 = self._get_ops()
+        return op1 + op2
+
+    def _opcode_product(self):
+        op1, op2 = self._get_ops()
+        return op1 * op2
+
+    def _get_ops(self):
+        orig1, orig2 = self.memory[
+            self.instruction_pointer + 1 : self.instruction_pointer + 3
+        ]
+        op1, op2 = self.memory[orig1], self.memory[orig2]
+        return op1, op2
 
     @property
     def output(self, address=0):
