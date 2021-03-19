@@ -43,6 +43,26 @@ def convert_digit(opcode):
         return Code404
 
 
+def increase_pointer(opcode):
+    """Define pointer increase based on opcode"""
+    if opcode in [1, 2]:
+        return 4
+    elif opcode in [3, 4]:
+        return 2
+    else:
+        return ValueError(f"Opcode {opcode} is not supported")
+
+
+def get_opcode_parameter_modes(instruction):
+    opcode = int(str(instruction)[-2:])  # the two right-most digits are the opcode
+    param_mode_str = str(instruction).zfill(5)[:-2]  # up to 3 digits after opcode
+    # the first param mode corresponds to the hundreds unit, second to thousands,
+    # etc, so first reverse the left parth of the instruction corresponding to the
+    # instruction set, then convert it back to ints.
+    param_modes = list(map(int, list(param_mode_str)[::-1]))
+    return opcode, param_modes
+
+
 class OpcodeComputer:
     """Class representing our Integer Computer"""
 
@@ -72,10 +92,11 @@ class OpcodeComputer:
             if self.memory[self.instruction_pointer] == 99:
                 return
 
-            opcode = self.memory[self.instruction_pointer]
+            instruction = self.memory[self.instruction_pointer]
+            opcode, parameter_modes = get_opcode_parameter_modes(instruction)
             opcode_method = convert_digit(opcode)
             self.memory = opcode_method(self.memory, self.instruction_pointer)
-            self.instruction_pointer += 4
+            self.instruction_pointer += increase_pointer(opcode)
 
     @property
     def output(self, address=0):
