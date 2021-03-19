@@ -7,7 +7,7 @@ import numpy as np
 class HaltProgram:
     """Stops the program."""
 
-    raise NotImplementedError
+    raise StopIteration
 
 
 @dataclass(frozen=True)

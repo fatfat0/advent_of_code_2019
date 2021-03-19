@@ -1,4 +1,4 @@
-from helpers.digit_codes import Digit, Code1, Code2, Code99, Code404
+from digits.digit_codes import *
 
 
 def convert_digits_to_class_list(data_list):
