@@ -1,11 +1,11 @@
-from digit import Digit, Code1, Code2, Code99, Code404
+from helpers.digit_codes import Digit, Code1, Code2, Code99, Code404
 
 
 def convert_digits_to_class_list(data_list):
-    return [_convert_digit(digit, index) for index, digit in enumerate(data_list)]
+    return [convert_digit(digit, index) for index, digit in enumerate(data_list)]
 
 
-def _convert_digit(digit, index):
+def convert_digit(digit, index):
     try:
         return globals()[f"Code{digit}"](digit, index)
     except:
