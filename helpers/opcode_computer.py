@@ -1,3 +1,48 @@
+def Code1(memory, instruction_pointer):
+    """Class representing our Code2 (product)"""
+    input_1_pos = memory[instruction_pointer + 1]
+    input_2_pos = memory[instruction_pointer + 2]
+    dest = memory[instruction_pointer + 3]
+    memory[dest] = memory[input_1_pos] + memory[input_2_pos]
+    return memory
+
+
+def Code2(memory, instruction_pointer):
+    """Class representing our Code2 (product)"""
+    input_1_pos = memory[instruction_pointer + 1]
+    input_2_pos = memory[instruction_pointer + 2]
+    dest = memory[instruction_pointer + 3]
+    memory[dest] = memory[input_1_pos] * memory[input_2_pos]
+    return memory
+
+
+def Code3(memory, instruction_pointer, input_val):
+    """Class representing our Code2 (product)"""
+    dest = memory[instruction_pointer + 1]
+    memory[dest] = input_val
+    return memory
+
+
+def Code4(memory, instruction_pointer, output_val):
+    """Class representing our Code2 (product)"""
+    dest = memory[instruction_pointer + 1]
+    output_val = memory[dest]
+    return output_val
+
+
+def Code404(memory, instruction_pointer):
+    """Class representing our Code2 (product)"""
+    raise NotImplementedError
+
+
+def convert_digit(opcode):
+    try:
+        return globals()[f"Code{opcode}"]
+    except:
+        # TODO write down the error
+        return Code404
+
+
 class OpcodeComputer:
     """Class representing our Integer Computer"""
 
@@ -28,35 +73,9 @@ class OpcodeComputer:
                 return
 
             opcode = self.memory[self.instruction_pointer]
-            dest = self.memory[self.instruction_pointer + 3]
-
-            opcode_method = self._get_opcode_method(opcode)
-            self.memory[dest] = opcode_method()
-
+            opcode_method = convert_digit(opcode)
+            self.memory = opcode_method(self.memory, self.instruction_pointer)
             self.instruction_pointer += 4
-
-    def _get_opcode_method(self, opcode):
-        if opcode == 1:
-            return self._opcode_sum
-        if opcode == 2:
-            return self._opcode_product
-        else:
-            raise ValueError(opcode)
-
-    def _opcode_sum(self):
-        op1, op2 = self._get_ops()
-        return op1 + op2
-
-    def _opcode_product(self):
-        op1, op2 = self._get_ops()
-        return op1 * op2
-
-    def _get_ops(self):
-        orig1, orig2 = self.memory[
-            self.instruction_pointer + 1 : self.instruction_pointer + 3
-        ]
-        op1, op2 = self.memory[orig1], self.memory[orig2]
-        return op1, op2
 
     @property
     def output(self, address=0):
