@@ -1,33 +1,41 @@
-def Code1(memory, instruction_pointer):
-    """Class representing our Code2 (product)"""
-    input_1_pos = memory[instruction_pointer + 1]
-    input_2_pos = memory[instruction_pointer + 2]
-    dest = memory[instruction_pointer + 3]
-    memory[dest] = memory[input_1_pos] + memory[input_2_pos]
+from math import prod
+
+
+def Code1(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code1 (sum)"""
+    parameters = get_parameters(memory, instruction_pointer, 3)
+    dest = parameters[2]
+    inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
+    memory[dest] = sum(inputs)
+
     return memory
 
 
-def Code2(memory, instruction_pointer):
+def Code2(memory, instruction_pointer, parameter_modes):
     """Class representing our Code2 (product)"""
-    input_1_pos = memory[instruction_pointer + 1]
-    input_2_pos = memory[instruction_pointer + 2]
-    dest = memory[instruction_pointer + 3]
-    memory[dest] = memory[input_1_pos] * memory[input_2_pos]
+    parameters = get_parameters(memory, instruction_pointer, 3)
+    dest = parameters[2]
+    inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
+    memory[dest] = prod(inputs)
     return memory
 
 
-def Code3(memory, instruction_pointer, input_val):
-    """Class representing our Code2 (product)"""
-    dest = memory[instruction_pointer + 1]
-    memory[dest] = input_val
+def Code3(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code3 (input)"""
+    parameters = get_parameters(memory, instruction_pointer, 1)
+    dest = parameters[0]
+    memory[dest] = int(input("Please enter input value (int)"))
     return memory
 
 
-def Code4(memory, instruction_pointer, output_val):
-    """Class representing our Code2 (product)"""
-    dest = memory[instruction_pointer + 1]
-    output_val = memory[dest]
-    return output_val
+def Code4(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code4 (output)"""
+    parameters = get_parameters(memory, instruction_pointer, 1)
+    dest = parameters[0]
+    output_val = get_inputs(memory, parameters, parameter_modes)[0]
+    # output_val = memory[dest]
+    print(f"Output value {output_val}")
+    return memory
 
 
 def Code404(memory, instruction_pointer):
@@ -35,7 +43,21 @@ def Code404(memory, instruction_pointer):
     raise NotImplementedError
 
 
-def convert_digit(opcode):
+def get_inputs(memory, parameters, parameter_modes):
+    inputs = []
+    for param, mode in zip(parameters, parameter_modes):
+        if mode == 0:
+            inputs.append(memory[param])
+        elif mode == 1:
+            inputs.append(param)
+    return inputs
+
+
+def get_parameters(memory, init_pointer, length):
+    return [memory[x] for x in range(init_pointer + 1, init_pointer + 1 + length)]
+
+
+def get_opcode_method(opcode):
     try:
         return globals()[f"Code{opcode}"]
     except:
@@ -53,14 +75,26 @@ def increase_pointer(opcode):
         return ValueError(f"Opcode {opcode} is not supported")
 
 
-def get_opcode_parameter_modes(instruction):
+def get_opcode_length(opcode):
+    if opcode in [1, 2]:
+        return 3
+    elif opcode in [3, 4]:
+        return 1
+    else:
+        return ValueError(f"Opcode {opcode} is not supported")
+
+
+def get_opcode_and_parameter_modes(instruction):
     opcode = int(str(instruction)[-2:])  # the two right-most digits are the opcode
-    param_mode_str = str(instruction).zfill(5)[:-2]  # up to 3 digits after opcode
+    opcode_length = get_opcode_length(opcode)
+    opcode_mode_str = str(instruction)[:-2].zfill(
+        opcode_length
+    )  # up to 3 digits after opcode
     # the first param mode corresponds to the hundreds unit, second to thousands,
     # etc, so first reverse the left parth of the instruction corresponding to the
     # instruction set, then convert it back to ints.
-    param_modes = list(map(int, list(param_mode_str)[::-1]))
-    return opcode, param_modes
+    parameter_modes = list(map(int, list(opcode_mode_str)[::-1]))
+    return opcode, parameter_modes
 
 
 class OpcodeComputer:
@@ -92,10 +126,15 @@ class OpcodeComputer:
             if self.memory[self.instruction_pointer] == 99:
                 return
 
+            # from IPython import embed
+
+            # embed()
             instruction = self.memory[self.instruction_pointer]
-            opcode, parameter_modes = get_opcode_parameter_modes(instruction)
-            opcode_method = convert_digit(opcode)
-            self.memory = opcode_method(self.memory, self.instruction_pointer)
+            opcode, parameter_modes = get_opcode_and_parameter_modes(instruction)
+            opcode_method = get_opcode_method(opcode)
+            self.memory = opcode_method(
+                self.memory, self.instruction_pointer, parameter_modes
+            )
             self.instruction_pointer += increase_pointer(opcode)
 
     @property
