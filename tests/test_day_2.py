@@ -4,7 +4,7 @@ from helpers.opcode_computer import OpcodeComputer
 def opcode(program_data):
     opcode_computer = OpcodeComputer(program_data)
     opcode_computer.run()
-    return opcode_computer.memory
+    return opcode_computer.get_results()
 
 
 def test_cases_part_1():
