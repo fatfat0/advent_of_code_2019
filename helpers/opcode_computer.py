@@ -9,7 +9,7 @@ class OpcodeComputer:
         """Initialize with program, given as a list of integers"""
         self._instruction_length = instruction_length
 
-    def run(self, program):
+    def run(self, program:list):
         """Execute the program currently in the memory, until a 99 opcode is encountered.
 
         Note: As time goes on and more instructiosn get added, we would probably
@@ -34,7 +34,4 @@ class OpcodeComputer:
     def output(self, address=0):
         """The output of the program is considered to be whatever sits at position
         'address' in the memory (default 0)."""
-        return self._instructions.memory[address]
-
-    def __getitem__(self, key):
-        return self._instructions.memory[key]
+        return self._instructions.memory[address].op_code

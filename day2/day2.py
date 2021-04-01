@@ -1,40 +1,14 @@
-from itertools import product
+from helpers import OpcodeComputer
 
-from opcode_computer.helpers import OpcodeComputer
-from helpers.data_access import get_data
-
-data = get_data(day=2)
+data = [1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,1,10,19,1,6,19,23,2,23,6,27,2,6,27,31,2,13,31,35,1,10,35,39,2,39,13,43,1,43,13,47,1,6,47,51,1,10,51,55,2,55,6,59,1,5,59,63,2,9,63,67,1,6,67,71,2,9,71,75,1,6,75,79,2,79,13,83,1,83,10,87,1,13,87,91,1,91,10,95,2,9,95,99,1,5,99,103,2,10,103,107,1,107,2,111,1,111,5,0,99,2,14,0,0]
 
 # Part 1
+data[1] = 12
+data[2] = 2
 
+# Computer Run
+computer = OpcodeComputer()
+computer.run(data)
 
-# Tests for part one. Uncomment any program_master line to run test.
-# program_master = [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]  # answer should be 3500
-# program_master = [1, 0, 0, 0, 99]  # answer should be 2
-# program_master = [2, 3, 0, 3, 99]  # answer should be 2
-# program_master = [2, 4, 4, 5, 99, 0]  # answer should be 2
-program_master = [99]  # answer should be 30
-
-computer = OpcodeComputer(list(program_master))
-computer.run()
-print(f"Test value left at position 0 is {computer[0]}")
-
-program_master = [int(entry) for entry in data.split(",")]
-
-computer = OpcodeComputer(list(program_master))
-computer.set_inputs([12, 2])
-computer.run()
-
-print(f"Value left at position 0 is {computer[0]}")
-
-# Part 2
-
-for noun, verb in product(range(1, 100), repeat=2):
-    computer = OpcodeComputer(list(program_master))
-    computer.set_inputs([noun, verb])
-    computer.run()
-
-    if computer.output == 19690720:
-        break
-
-print(f"Correct output provided by {noun}, {verb}, with key {100*noun+verb}")
+# The answer is wrong. I am not sure the reason.
+print(computer.output)

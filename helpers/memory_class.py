@@ -1,4 +1,4 @@
-from .digits import Code1, Code2, Code3, Code4, Code99, Code404
+from .digits import *
 
 
 class MemoryList:

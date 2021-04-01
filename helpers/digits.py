@@ -14,22 +14,22 @@ class Digit:
     index: int = field(repr=False)
 
     @property
-    def op_code(self):
+    def op_code(self)-> int:
         return int(str(self.value)[-2:])
 
     @property
-    def first_mode(self):
+    def first_mode(self)-> int:
         return self._get_mode(degree=1)
 
     @property
-    def second_mode(self):
+    def second_mode(self)-> int:
         return self._get_mode(degree=2)
 
     @property
-    def third_mode(self):
+    def third_mode(self)-> int:
         return self._get_mode(degree=3)
 
-    def _get_mode(self, degree):
+    def _get_mode(self, degree:int)-> int:
         try:
             return int(str(self.value)[-2 - degree :: -1 - degree])
         except ValueError:
