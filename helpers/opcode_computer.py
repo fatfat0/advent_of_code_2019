@@ -50,6 +50,8 @@ def get_inputs(memory, parameters, parameter_modes):
             inputs.append(memory[param])
         elif mode == 1:
             inputs.append(param)
+        else:
+            raise ValueError(f"mode {mode} not supported")
     return inputs
 
 
