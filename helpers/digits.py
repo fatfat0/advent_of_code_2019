@@ -2,6 +2,14 @@ from dataclasses import dataclass, field
 from numpy import prod
 
 
+def convert_digit(digit, index):
+    opcode = int(str(digit)[-2:])
+    try:
+        return globals()[f"Code{opcode}"](digit, index)
+    except KeyError:
+        return Code404(digit, index)
+
+
 class HaltProgramException(Exception):
     """Stops the program."""
 
@@ -14,24 +22,24 @@ class Digit:
     index: int = field(repr=False)
 
     @property
-    def op_code(self)-> int:
+    def op_code(self) -> int:
         return int(str(self.value)[-2:])
 
     @property
-    def first_mode(self)-> int:
+    def first_mode(self) -> int:
         return self._get_mode(degree=1)
 
     @property
-    def second_mode(self)-> int:
+    def second_mode(self) -> int:
         return self._get_mode(degree=2)
 
     @property
-    def third_mode(self)-> int:
+    def third_mode(self) -> int:
         return self._get_mode(degree=3)
 
-    def _get_mode(self, degree:int)-> int:
+    def _get_mode(self, degree: int) -> int:
         try:
-            return int(str(self.value)[-2 - degree :: -1 - degree])
+            return int(str(self.value)[-2 - degree :: -2 - degree])
         except ValueError:
             return 0
 
@@ -96,7 +104,7 @@ class Code99(Digit):
     """Program End Digit"""
 
     def digit_function(self, memory_list=None):
-        return HaltProgramException()
+        raise HaltProgramException()
 
 
 class Code404(Digit):
