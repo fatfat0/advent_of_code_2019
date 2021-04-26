@@ -8,7 +8,7 @@ def Code1(memory, instruction_pointer, parameter_modes):
     inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
     memory[dest] = sum(inputs)
 
-    return memory
+    return memory, None
 
 
 def Code2(memory, instruction_pointer, parameter_modes):
@@ -17,15 +17,15 @@ def Code2(memory, instruction_pointer, parameter_modes):
     dest = parameters[2]
     inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
     memory[dest] = prod(inputs)
-    return memory
+    return memory, None
 
 
 def Code3(memory, instruction_pointer, parameter_modes):
     """Class representing our Code3 (input)"""
     parameters = get_parameters(memory, instruction_pointer, 1)
     dest = parameters[0]
-    memory[dest] = int(input("Please enter input value (int)"))
-    return memory
+    memory[dest] = int(input("Please enter input value (int): "))
+    return memory, None
 
 
 def Code4(memory, instruction_pointer, parameter_modes):
@@ -33,9 +33,52 @@ def Code4(memory, instruction_pointer, parameter_modes):
     parameters = get_parameters(memory, instruction_pointer, 1)
     dest = parameters[0]
     output_val = get_inputs(memory, parameters, parameter_modes)[0]
-    # output_val = memory[dest]
     print(f"Output value {output_val}")
-    return memory
+    return memory, None
+
+
+def Code5(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code5 (output)"""
+    parameters = get_parameters(memory, instruction_pointer, 2)
+    inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
+    pointer = None
+    if inputs[0] != 0:
+        pointer = inputs[1]
+    return memory, pointer
+
+
+def Code6(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code6 (output)"""
+    parameters = get_parameters(memory, instruction_pointer, 2)
+    inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
+    pointer = None
+    if inputs[0] == 0:
+        pointer = inputs[1]
+    return memory, pointer
+
+
+def Code7(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code7 (output)"""
+    parameters = get_parameters(memory, instruction_pointer, 3)
+    dest = parameters[2]
+    inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
+    if inputs[0] < inputs[1]:
+        memory[dest] = 1
+    else:
+        memory[dest] = 0
+    return memory, None
+
+
+def Code8(memory, instruction_pointer, parameter_modes):
+    """Class representing our Code8 (output)"""
+    parameters = get_parameters(memory, instruction_pointer, 3)
+    dest = parameters[2]
+    inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
+    if inputs[0] == inputs[1]:
+        memory[dest] = 1
+    else:
+        memory[dest] = 0
+    return memory, None
 
 
 def Code404(memory, instruction_pointer):
@@ -73,8 +116,12 @@ def increase_pointer(opcode):
         return 4
     elif opcode in [3, 4]:
         return 2
+    elif opcode in [5, 6]:
+        return 3
+    elif opcode in [7, 8]:
+        return 4
     else:
-        return ValueError(f"Opcode {opcode} is not supported")
+        raise ValueError(f"Opcode {opcode} is not supported")
 
 
 def get_opcode_length(opcode):
@@ -82,8 +129,12 @@ def get_opcode_length(opcode):
         return 3
     elif opcode in [3, 4]:
         return 1
+    elif opcode in [5, 6]:
+        return 2
+    elif opcode in [7, 8]:
+        return 3
     else:
-        return ValueError(f"Opcode {opcode} is not supported")
+        raise ValueError(f"Opcode {opcode} is not supported")
 
 
 def get_opcode_and_parameter_modes(instruction):
@@ -128,16 +179,16 @@ class OpcodeComputer:
             if self.memory[self.instruction_pointer] == 99:
                 return
 
-            # from IPython import embed
-
-            # embed()
             instruction = self.memory[self.instruction_pointer]
             opcode, parameter_modes = get_opcode_and_parameter_modes(instruction)
             opcode_method = get_opcode_method(opcode)
-            self.memory = opcode_method(
+            self.memory, pointer = opcode_method(
                 self.memory, self.instruction_pointer, parameter_modes
             )
-            self.instruction_pointer += increase_pointer(opcode)
+            if pointer is None:
+                self.instruction_pointer += increase_pointer(opcode)
+            else:
+                self.instruction_pointer = pointer
 
     @property
     def output(self, address=0):
