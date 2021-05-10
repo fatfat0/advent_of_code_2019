@@ -687,6 +687,6 @@ data = [
 # Computer Run Day 5 Part 1
 computer = OpcodeComputer()
 computer.run(data)
-print(f"Day 5 Part 1 answer is  above last one:")
+print(f"Day 5 Part 1 answer is  non-zero value above:")
 
 # Computer Run Part 2

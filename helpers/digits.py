@@ -100,11 +100,10 @@ class Code3(Digit):
     def next_pointer(self):
         return self.index + 2
 
-    def digit_function(self, memory_list, digit_input=5):
+    def digit_function(self, memory_list, digit_input: int):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
-        # digit_input = int(input("User Input -> "))
         memory_list.replace_item(
             old_item=input_1_pos,
             new_item=digit_input,
