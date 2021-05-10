@@ -122,6 +122,7 @@ class Code4(Digit):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
+        memory_list.memory_outputs.add(input_1_pos.value)
         print(f"Output value is: {input_1_pos.value}")
 
 

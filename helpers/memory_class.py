@@ -6,6 +6,7 @@ class MemoryList:
 
     def __init__(self, program_instructions):
         self.memory = self._convert_digits_to_class_list(program_instructions)
+        self.memory_outputs = set()
 
     def _convert_digits_to_class_list(self, data_list):
         return [convert_digit(digit, index) for index, digit in enumerate(data_list)]
@@ -28,3 +29,7 @@ class MemoryList:
             return self.memory[index]
         else:
             return ValueError(f"Opcode mode {mode} is not supported")
+
+    def get_memory_output(self):
+        assert len(self.memory_outputs) == 2
+        return max(self.memory_outputs)
