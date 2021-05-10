@@ -22,7 +22,6 @@ class HaltProgramException(Exception):
 class Digit:
     value: str = field(repr=False)
     index: int = field(repr=False)
-    pointer_value: int = 4
 
     @property
     def op_code(self) -> int:
@@ -42,7 +41,7 @@ class Digit:
 
     @property
     def next_pointer(self):
-        return self.index + self.pointer_value
+        return self.index + 4
 
     def _get_mode(self, degree: int) -> int:
         try:
@@ -97,9 +96,11 @@ class Code3(Digit):
     """takes a single integer as input and saves it to the position given by its only parameter.
     For example, the instruction 3,50 would take an input value and store it at address 50."""
 
-    pointer_value: int = 2
+    @property
+    def next_pointer(self):
+        return self.index + 2
 
-    def digit_function(self, memory_list, digit_input=1):
+    def digit_function(self, memory_list, digit_input=5):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
@@ -114,7 +115,9 @@ class Code4(Digit):
     """Opcode 4 outputs the value of its only parameter.
     For example, the instruction 4,50 would output the value at address 50."""
 
-    pointer_value: int = 2
+    @property
+    def next_pointer(self):
+        return self.index + 2
 
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
@@ -129,6 +132,10 @@ class Code5(Digit):
 
     pointer_value: int = 2
 
+    @property
+    def next_pointer(self):
+        return self.index + self.pointer_value
+
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
@@ -137,7 +144,7 @@ class Code5(Digit):
             self.pointer_value = (
                 memory_list.find_position(
                     index=self.index + 2, mode=self.second_mode
-                ).value
+                ).next_pointer
                 - self.index
             )
 
@@ -149,15 +156,19 @@ class Code6(Digit):
 
     pointer_value: int = 2
 
+    @property
+    def next_pointer(self):
+        return self.index + self.pointer_value
+
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
-        if input_1_pos == 0:
+        if input_1_pos.value == 0:
             self.pointer_value = (
                 memory_list.find_position(
                     index=self.index + 2, mode=self.second_mode
-                ).value
+                ).next_pointer
                 - self.index
             )
 
@@ -177,7 +188,7 @@ class Code7(Digit):
         output_pos = memory_list.find_position(
             index=self.index + 3, mode=self.third_mode
         )
-        if input_1_pos < input_2_pos:
+        if input_1_pos.value < input_2_pos.value:
             new_value = 1
         else:
             new_value = 0
@@ -200,7 +211,7 @@ class Code8(Digit):
         output_pos = memory_list.find_position(
             index=self.index + 3, mode=self.third_mode
         )
-        if input_1_pos == input_2_pos:
+        if input_1_pos.value == input_2_pos.value:
             new_value = 1
         else:
             new_value = 0
@@ -211,7 +222,9 @@ class Code8(Digit):
 class Code99(Digit):
     """Program End Digit"""
 
-    pointer_value: int = 1
+    @property
+    def next_pointer(self):
+        return self.index + 1
 
     def digit_function(self, memory_list=None):
         raise HaltProgramException()
@@ -220,7 +233,9 @@ class Code99(Digit):
 class Code404(Digit):
     """None functioning digits."""
 
-    pointer_value: int = 1
+    @property
+    def next_pointer(self):
+        return self.index + 1
 
     def digit_function(self, memory_list=None):
         pass
