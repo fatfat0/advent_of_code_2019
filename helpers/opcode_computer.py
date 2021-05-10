@@ -9,23 +9,23 @@ class OpcodeComputer:
         """Initialize with program, given as a list of integers"""
         self._instruction_length = instruction_length
 
-    def run(self, program:list):
+    def run(self, program: list):
         """Execute the program currently in the memory, until a 99 opcode is encountered.
 
         Note: As time goes on and more instructiosn get added, we would probably
         refactor this. Create a class for the various instructions and have them be
         responsible for computing the correct results."""
         self._instructions = MemoryList(program)
+        index_pointer = 0
         try:
-            for index_pointer in range(
-                0, len(self._instructions.memory), self._instruction_length
-            ):
-                # TODO index pointer will require more advance function...
+            while True:
                 self._instructions.memory[index_pointer].digit_function(
                     memory_list=self._instructions
                 )
+                index_pointer = self._instructions.memory[index_pointer].next_pointer
+
         except HaltProgramException:
-            print("End Program.")
+            pass
 
     def get_results(self):
         return self._instructions.get_memory_codes()
@@ -34,4 +34,4 @@ class OpcodeComputer:
     def output(self, address=0):
         """The output of the program is considered to be whatever sits at position
         'address' in the memory (default 0)."""
-        return self._instructions.memory[address].op_code
+        return self._instructions.memory[address].value

@@ -1,3 +1,5 @@
+from itertools import product
+
 from helpers import OpcodeComputer
 
 data = [
@@ -123,11 +125,21 @@ data = [
     0,
     0,
 ]
-# Part 1
+
+# Computer Run Day 2 Part 1
 data[1] = 12
 data[2] = 2
 
-# Computer Run
 computer = OpcodeComputer()
 computer.run(data)
-print(computer.output)
+print(f"Day 2 Part 1 answer is  {computer.output}")
+
+# Computer Run Day 2 Part 2
+for noun, verb in product(range(1, 100), repeat=2):
+    data[1] = noun
+    data[2] = verb
+    computer = OpcodeComputer()
+    computer.run(data)
+    if computer.output == 19690720:
+        print(f"Day 2 Part 2 answer is: {100 * noun + verb}")
+        break

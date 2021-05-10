@@ -17,13 +17,13 @@ class MemoryList:
         return self.memory[self.memory[position].value]
 
     def replace_item(self, old_item, new_item):
-        index = self.memory.index(old_item)
-        self.memory.remove(old_item)
+        index = old_item.index
+        self.memory.pop(index)
         self.memory.insert(index, convert_digit(digit=new_item, index=index))
 
     def find_position(self, index, mode=0):
         if mode == 0:
-            return self.memory[self.memory[index].op_code]
+            return self.memory[self.memory[index].value]
         elif mode == 1:
             return self.memory[index]
         else:
