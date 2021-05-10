@@ -29,4 +29,4 @@ def test_digit_class_1(memory_list):
 
     assert memory_list.read_by_index(3).op_code == 3
     test_digit.digit_function(memory_list)
-    assert memory_list.read_by_index(3).op_code == 0
+    assert memory_list.read_by_index(3).op_code == 1
