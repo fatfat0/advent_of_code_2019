@@ -22,7 +22,7 @@ class HaltProgramException(Exception):
 class Digit:
     value: str = field(repr=False)
     index: int = field(repr=False)
-    next_pointer: int = index + 4
+    pointer_value: int = 4
 
     @property
     def op_code(self) -> int:
@@ -39,6 +39,10 @@ class Digit:
     @property
     def third_mode(self) -> int:
         return self._get_mode(degree=3)
+
+    @property
+    def next_pointer(self):
+        return self.index + self.pointer_value
 
     def _get_mode(self, degree: int) -> int:
         try:
@@ -90,18 +94,16 @@ class Code2(Digit):
 
 
 class Code3(Digit):
-    """[summary]"""
+    """takes a single integer as input and saves it to the position given by its only parameter.
+    For example, the instruction 3,50 would take an input value and store it at address 50."""
 
-    self._next_pointer: int = 2
+    pointer_value: int = 2
 
-    def digit_function(
-        self,
-        memory_list,
-    ):
+    def digit_function(self, memory_list, digit_input=1):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
-        digit_input = int(input("User Input -> "))
+        # digit_input = int(input("User Input -> "))
         memory_list.replace_item(
             old_item=input_1_pos,
             new_item=digit_input,
@@ -109,9 +111,10 @@ class Code3(Digit):
 
 
 class Code4(Digit):
-    """[summary]"""
+    """Opcode 4 outputs the value of its only parameter.
+    For example, the instruction 4,50 would output the value at address 50."""
 
-    self._next_pointer: int = 2
+    pointer_value: int = 2
 
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
@@ -121,39 +124,48 @@ class Code4(Digit):
 
 
 class Code5(Digit):
-    """[summary]"""
+    """Opcode 5 is jump-if-true: if the first parameter is non-zero,
+    it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing."""
 
-    self._next_pointer: int = 3
+    pointer_value: int = 2
 
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
         if input_1_pos != 0:
-            self.self._next_pointer = memory_list.find_position(
-                index=self.index + 2, mode=self.second_mode
-            ).value
+            self.pointer_value = (
+                memory_list.find_position(
+                    index=self.index + 2, mode=self.second_mode
+                ).value
+                - self.index
+            )
 
 
 class Code6(Digit):
-    """[summary]"""
+    """Opcode 6 is jump-if-false: if the first parameter is zero,
+    it sets the instruction pointer to the value from the second parameter.
+    Otherwise, it does nothing."""
 
-    self._next_pointer: int = 3
+    pointer_value: int = 2
 
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
         if input_1_pos == 0:
-            self.self._next_pointer = memory_list.find_position(
-                index=self.index + 2, mode=self.second_mode
-            ).value
+            self.pointer_value = (
+                memory_list.find_position(
+                    index=self.index + 2, mode=self.second_mode
+                ).value
+                - self.index
+            )
 
 
 class Code7(Digit):
-    """[summary]"""
-
-    self._next_pointer: int = 4
+    """Opcode 7 is less than: if the first parameter is less than the second parameter,
+    it stores 1 in the position given by the third parameter.
+    Otherwise, it stores 0."""
 
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
@@ -174,9 +186,9 @@ class Code7(Digit):
 
 
 class Code8(Digit):
-    """[summary]"""
-
-    self._next_pointer: int = 4
+    """Opcode 8 is equals: if the first parameter is equal to the second parameter,
+    it stores 1 in the position given by the third parameter.
+    Otherwise, it stores 0."""
 
     def digit_function(self, memory_list):
         input_1_pos = memory_list.find_position(
@@ -199,9 +211,7 @@ class Code8(Digit):
 class Code99(Digit):
     """Program End Digit"""
 
-    @property
-    def next_pointer(self):
-        return 1
+    pointer_value: int = 1
 
     def digit_function(self, memory_list=None):
         raise HaltProgramException()
@@ -210,9 +220,7 @@ class Code99(Digit):
 class Code404(Digit):
     """None functioning digits."""
 
-    @property
-    def next_pointer(self):
-        return 1
+    pointer_value: int = 1
 
     def digit_function(self, memory_list=None):
         pass
