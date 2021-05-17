@@ -27,10 +27,11 @@ class OpcodeComputer:
                         index_pointer
                     ].next_pointer
                 except TypeError:
+                    computer_input = computer_inputs.pop(0)
                     self._instructions.memory[index_pointer].digit_function(
-                        memory_list=self._instructions, digit_input=computer_inputs[0]
+                        memory_list=self._instructions, digit_input=computer_input
                     )
-                    computer_inputs.pop(0)
+
                     index_pointer = self._instructions.memory[
                         index_pointer
                     ].next_pointer
