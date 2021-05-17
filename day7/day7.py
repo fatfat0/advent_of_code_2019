@@ -1,6 +1,5 @@
-from itertools import product
+from itertools import permutations
 
-from helpers import OpcodeComputer
 from helpers import AmplificationCircuit
 
 data = [
@@ -533,12 +532,14 @@ data = [
     99,
 ]
 
-amplification_circuit = AmplificationCircuit(number_of_amplifiers=5)
+amplification_circuit = AmplificationCircuit(program=data)
 
 best_solution = [0, None]
 
+computer_input = 0
 for permutation in permutations(range(5), 5):
-    result = amplification_circuit.run(circuit_input=0, phase_squence=permutation)
+    computer_input
+    result = amplification_circuit.run(phase_squence=permutation, first_input=0)
     if result > best_solution[0]:
         best_solution = [result, permutation]
 

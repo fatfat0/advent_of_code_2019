@@ -1,4 +1,3 @@
-from typing import Type
 from .memory_class import MemoryList
 from .digits import HaltProgramException
 
@@ -10,7 +9,7 @@ class OpcodeComputer:
         """Initialize with program, given as a list of integers"""
         self._instruction_length = instruction_length
 
-    def run(self, program: list, computer_input: int = 1):
+    def run(self, program: list, computer_inputs: list):
         """Execute the program currently in the memory, until a 99 opcode is encountered.
 
         Note: As time goes on and more instructiosn get added, we would probably
@@ -29,8 +28,9 @@ class OpcodeComputer:
                     ].next_pointer
                 except TypeError:
                     self._instructions.memory[index_pointer].digit_function(
-                        memory_list=self._instructions, digit_input=computer_input
+                        memory_list=self._instructions, digit_input=computer_inputs[0]
                     )
+                    computer_inputs.pop(0)
                     index_pointer = self._instructions.memory[
                         index_pointer
                     ].next_pointer

@@ -130,7 +130,7 @@ class Code5(Digit):
     """Opcode 5 is jump-if-true: if the first parameter is non-zero,
     it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing."""
 
-    pointer_value: int = 2
+    pointer_value: int = 4
 
     @property
     def next_pointer(self):
@@ -140,7 +140,7 @@ class Code5(Digit):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
-        if input_1_pos != 0:
+        if input_1_pos.value != 0:
             self.pointer_value = (
                 memory_list.find_position(
                     index=self.index + 2, mode=self.second_mode
@@ -154,7 +154,7 @@ class Code6(Digit):
     it sets the instruction pointer to the value from the second parameter.
     Otherwise, it does nothing."""
 
-    pointer_value: int = 2
+    pointer_value: int = 4
 
     @property
     def next_pointer(self):
