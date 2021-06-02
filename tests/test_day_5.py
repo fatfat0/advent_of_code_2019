@@ -21,6 +21,18 @@ def test_modes_part_1():
 def test_day_5_part_2():
     assert (
         opcode_output(
+            program_data=[3, 9, 8, 9, 10, 9, 4, 9, 99, 0, 8], computer_inputs=[8]
+        )
+        == 1
+    )
+
+
+def test_day_5_part_2_large():
+    """The above example program uses an input instruction to ask for a single number.
+    The program will then output 999 if the input value is below 8, output 1000 if the
+    input value is equal to 8, or output 1001 if the input value is greater than 8."""
+    assert (
+        opcode_output(
             program_data=[
                 3,
                 21,
@@ -72,5 +84,5 @@ def test_day_5_part_2():
             ],
             computer_inputs=[7],
         )
-        == 1000
+        == 999
     )

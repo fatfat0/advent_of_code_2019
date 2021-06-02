@@ -686,5 +686,7 @@ data = [
 
 # Computer Run Day 5 Part 1
 computer = OpcodeComputer()
-computer.run(data)
+computer.run(data, computer_inputs=[1])
 print(f"Day 5 Part 1 answer is: {computer.diagnostic_output}")
+computer.run(data, computer_inputs=[5])
+print(f"Day 5 Part 2 answer is: {computer.diagnostic_output}")
