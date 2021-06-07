@@ -1,63 +1,98 @@
 from math import prod
 
 
-def Code1(memory, instruction_pointer, parameter_modes):
+class Memory:
+    """Just a class representing a list for the time being."""
+
+    def __init__(self, memory_vector):
+        self._mem_vec = memory_vector
+
+    def __getitem__(self, item):
+        return self._mem_vec[item]
+
+    def __setitem__(self, key, value):
+        self._mem_vec[key] = value
+
+    def __str__(self):
+        return str(self._mem_vec)
+
+
+class Amplifier(dict):
+    """Just a class representing a list for the time being."""
+
+    def __init__(self, a={"input": [], "output": 0}):
+        dict.__init__(self, a)
+
+
+# class Opcode:
+#     def __init__(self, memory, instruction_pointer):
+#         self._memory = memory
+#         self._instruction_pointer = instruction_pointer
+
+
+def Code1(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code1 (sum)"""
     parameters = get_parameters(memory, instruction_pointer, 3)
     dest = parameters[2]
     inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
     memory[dest] = sum(inputs)
 
-    return memory, None
+    return None
 
 
-def Code2(memory, instruction_pointer, parameter_modes):
+def Code2(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code2 (product)"""
     parameters = get_parameters(memory, instruction_pointer, 3)
     dest = parameters[2]
     inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
     memory[dest] = prod(inputs)
-    return memory, None
+    return None
 
 
-def Code3(memory, instruction_pointer, parameter_modes):
+def Code3(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code3 (input)"""
     parameters = get_parameters(memory, instruction_pointer, 1)
     dest = parameters[0]
-    memory[dest] = int(input("Please enter input value (int): "))
-    return memory, None
+    if len(amplifier["input"]) == 0:
+        memory[dest] = int(input("Please enter input value (int): "))
+    else:
+        memory[dest] = amplifier["input"].pop(0)
+    return None
 
 
-def Code4(memory, instruction_pointer, parameter_modes):
+def Code4(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code4 (output)"""
     parameters = get_parameters(memory, instruction_pointer, 1)
     dest = parameters[0]
     output_val = get_inputs(memory, parameters, parameter_modes)[0]
     print(f"Output value {output_val}")
-    return memory, None
+    print("a", amplifier["output"])
+    amplifier["output"] = output_val
+    print("ab", amplifier["output"])
+    return None
 
 
-def Code5(memory, instruction_pointer, parameter_modes):
+def Code5(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code5 (output)"""
     parameters = get_parameters(memory, instruction_pointer, 2)
     inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
     pointer = None
     if inputs[0] != 0:
         pointer = inputs[1]
-    return memory, pointer
+    return pointer
 
 
-def Code6(memory, instruction_pointer, parameter_modes):
+def Code6(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code6 (output)"""
     parameters = get_parameters(memory, instruction_pointer, 2)
     inputs = get_inputs(memory, parameters[:2], parameter_modes[:2])
     pointer = None
     if inputs[0] == 0:
         pointer = inputs[1]
-    return memory, pointer
+    return pointer
 
 
-def Code7(memory, instruction_pointer, parameter_modes):
+def Code7(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code7 (output)"""
     parameters = get_parameters(memory, instruction_pointer, 3)
     dest = parameters[2]
@@ -66,10 +101,10 @@ def Code7(memory, instruction_pointer, parameter_modes):
         memory[dest] = 1
     else:
         memory[dest] = 0
-    return memory, None
+    return None
 
 
-def Code8(memory, instruction_pointer, parameter_modes):
+def Code8(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code8 (output)"""
     parameters = get_parameters(memory, instruction_pointer, 3)
     dest = parameters[2]
@@ -78,10 +113,10 @@ def Code8(memory, instruction_pointer, parameter_modes):
         memory[dest] = 1
     else:
         memory[dest] = 0
-    return memory, None
+    return None
 
 
-def Code404(memory, instruction_pointer):
+def Code404(memory, instruction_pointer, parameter_modes, amplifier):
     """Class representing our Code2 (product)"""
     raise NotImplementedError
 
@@ -153,10 +188,12 @@ def get_opcode_and_parameter_modes(instruction):
 class OpcodeComputer:
     """Class representing our Integer Computer"""
 
-    def __init__(self, program):
+    def __init__(self, program, input_vector=[]):
         """Initialize with program, given as a list of integers"""
-        self.memory = program
+        self.memory = Memory(program)
         self.instruction_pointer = 0
+        self.amplifier = Amplifier()
+        self.amplifier["input"] = input_vector
 
     def set_inputs(self, inputs, addresses=[1, 2]):
         """Provide inputs in the form of a (noun, verb) tuple.
@@ -182,15 +219,18 @@ class OpcodeComputer:
             instruction = self.memory[self.instruction_pointer]
             opcode, parameter_modes = get_opcode_and_parameter_modes(instruction)
             opcode_method = get_opcode_method(opcode)
-            self.memory, pointer = opcode_method(
-                self.memory, self.instruction_pointer, parameter_modes
+            pointer = opcode_method(
+                self.memory,
+                self.instruction_pointer,
+                parameter_modes,
+                self.amplifier,
             )
             if pointer is None:
                 self.instruction_pointer += increase_pointer(opcode)
             else:
                 self.instruction_pointer = pointer
 
-    @property
+    # @property
     def output(self, address=0):
         """The output of the program is considered to be whatever sits at position
         'address' in the memory (default 0)."""
