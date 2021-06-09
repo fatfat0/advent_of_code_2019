@@ -538,8 +538,9 @@ best_solution = [0, None]
 
 computer_input = 0
 for permutation in permutations(range(5), 5):
-    computer_input
-    result = amplification_circuit.run(phase_squence=permutation, first_input=0)
+    result = amplification_circuit.run(
+        phase_squence=permutation, first_input=computer_input
+    )
     if result > best_solution[0]:
         best_solution = [result, permutation]
 
