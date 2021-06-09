@@ -141,9 +141,12 @@ class Code5(Digit):
             index=self.index + 1, mode=self.first_mode
         )
         if input_1_pos.value != 0:
-            self.pointer_value = memory_list.find_position(
-                index=self.index + 2, mode=self.second_mode
-            ).value
+            self.pointer_value = (
+                memory_list.find_position(
+                    index=self.index + 2, mode=self.second_mode
+                ).value
+                - self.index
+            )
 
 
 class Code6(Digit):
@@ -162,9 +165,12 @@ class Code6(Digit):
             index=self.index + 1, mode=self.first_mode
         )
         if input_1_pos.value == 0:
-            self.pointer_value = memory_list.find_position(
-                index=self.index + 2, mode=self.second_mode
-            ).value
+            self.pointer_value = (
+                memory_list.find_position(
+                    index=self.index + 2, mode=self.second_mode
+                ).value
+                - self.index
+            )
 
 
 class Code7(Digit):

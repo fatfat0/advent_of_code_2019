@@ -10,7 +10,7 @@ class Amplifier:
         self.program = program
         self._computer = OpcodeComputer()
         self._computer.run(self.program, amplifier_inputs)
-        return self._computer.diagnostic_output()
+        return self._computer.diagnostic_output
 
 
 class AmplificationCircuit:
