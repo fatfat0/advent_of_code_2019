@@ -123,7 +123,8 @@ class Code4(Digit):
             index=self.index + 1, mode=self.first_mode
         )
         memory_list.memory_outputs.add(input_1_pos.value)
-        print(f"Output value is: {input_1_pos.value}")
+
+    # print(f"Output value is: {input_1_pos.value}")
 
 
 class Code5(Digit):
