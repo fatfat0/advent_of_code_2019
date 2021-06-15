@@ -534,14 +534,29 @@ data = [
 
 amplification_circuit = AmplificationCircuit(program=data)
 
-best_solution = [0, None]
 
-computer_input = 0
-for permutation in permutations(range(5), 5):
-    result = amplification_circuit.run(
-        phase_squence=permutation, first_input=computer_input
-    )
-    if result > best_solution[0]:
-        best_solution = [result, permutation]
+def day_7_function(
+    amplification_circuit, number_of_feedback=0, permutation_range=range(5)
+):
+    best_solution = [0, None]
 
-print(f"Day 7 Part 1 answer is  [Highest Result, Sequence]->{best_solution}")
+    computer_input = 0
+    for permutation in permutations(permutation_range, 5):
+        result = amplification_circuit.run(
+            phase_squence=permutation,
+            first_input=computer_input,
+            number_of_feedback=number_of_feedback,
+        )
+        if result > best_solution[0]:
+            best_solution = [result, permutation]
+    return best_solution
+
+
+print(
+    f"Day 7 Part 1 answer is  [Highest Result, Sequence]->{day_7_function(amplification_circuit)}"
+)
+
+
+print(
+    f"Day 7 Part 2 answer is  [Highest Result, Sequence]->{day_7_function(amplification_circuit, number_of_feedback=1, permutation_range=range(5,10))}"
+)
