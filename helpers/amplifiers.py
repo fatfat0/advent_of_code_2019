@@ -4,13 +4,14 @@ from helpers import OpcodeComputer
 class Amplifier:
     def __init__(
         self,
-        program,
+        program: list,
     ) -> int:
         self.program = program
         self._computer = OpcodeComputer()
 
     def run(self, amplifier_inputs: list):
         self._computer.run(self.program, amplifier_inputs)
+        self.program = self._computer.processed_program
 
     @property
     def amplifier_output(self):

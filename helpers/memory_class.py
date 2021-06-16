@@ -32,3 +32,6 @@ class MemoryList:
 
     def get_memory_output(self):
         return max(self.memory_outputs)
+
+    def get_program(self):
+        return [digit.value for digit in self.memory]

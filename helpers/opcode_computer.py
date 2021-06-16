@@ -51,3 +51,7 @@ class OpcodeComputer:
     @property
     def diagnostic_output(self):
         return self._instructions.get_memory_output()
+
+    @property
+    def processed_program(self):
+        return self._instructions.get_program()
