@@ -1,3 +1,4 @@
+from helpers.digits import HaltProgramException
 from helpers import OpcodeComputer
 
 
@@ -10,8 +11,10 @@ class Amplifier:
         self._computer = OpcodeComputer()
 
     def run(self, amplifier_inputs: list):
-        self._computer.run(self.program, amplifier_inputs)
+        self._computer.run(self.program, amplifier_inputs, pausable=True)
         self.program = self._computer.processed_program
+        if self._computer.halted:
+            raise HaltProgramException()
 
     @property
     def amplifier_output(self):
@@ -26,15 +29,24 @@ class AmplificationCircuit:
         ]
 
     def run(
-        self, phase_squence: list, first_input: int = 0, number_of_feedback: int = 0
+        self, phase_squence: list, first_input: int = 0, feedback_loop: bool = False
     ) -> int:
         amplifier_input = first_input
-        feedback_count = 0
-        while feedback_count <= number_of_feedback:
-            for amplifier_squence, amplifier in zip(phase_squence, self._amplifiers):
-                amplifier.run(
-                    amplifier_inputs=[amplifier_squence, amplifier_input],
-                )
-                amplifier_input = amplifier.amplifier_output
-            feedback_count += 1
-        return amplifier_input
+        print(f"this is fist loop:{amplifier_input}")
+        print(f"phase_squence:{phase_squence}")
+        while True:
+            try:
+                for amplifier_squence, amplifier in zip(
+                    phase_squence, self._amplifiers
+                ):
+                    print(f"amplifier_squence {amplifier_squence}")
+                    amplifier.run(
+                        amplifier_inputs=[amplifier_squence, amplifier_input],
+                    )
+                    amplifier_input = amplifier.amplifier_output
+                if not feedback_loop:
+                    print(f"amplifier_input_feedback:{amplifier_input}")
+                    return amplifier_input
+            except HaltProgramException:
+                print(f"amplifier_input:{amplifier_input}")
+                return amplifier_input

@@ -18,6 +18,14 @@ class HaltProgramException(Exception):
     pass
 
 
+class PauseProgramException(Exception):
+    """Pauses the program."""
+
+    pass
+    # def __init__(self, output_value):
+    #     self.output = output_value
+
+
 @dataclass(frozen=True)
 class Digit:
     value: str = field(repr=False)
@@ -122,9 +130,8 @@ class Code4(Digit):
         input_1_pos = memory_list.find_position(
             index=self.index + 1, mode=self.first_mode
         )
-        memory_list.memory_outputs.add(input_1_pos.value)
-
-    # print(f"Output value is: {input_1_pos.value}")
+        memory_list.memory_outputs.append(input_1_pos.value)
+        raise PauseProgramException()
 
 
 class Code5(Digit):

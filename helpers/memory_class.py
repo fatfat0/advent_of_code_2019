@@ -6,7 +6,7 @@ class MemoryList:
 
     def __init__(self, program_instructions):
         self.memory = self._convert_digits_to_class_list(program_instructions)
-        self.memory_outputs = {0}
+        self.memory_outputs = [0]
 
     def _convert_digits_to_class_list(self, data_list):
         return [convert_digit(digit, index) for index, digit in enumerate(data_list)]
@@ -31,7 +31,7 @@ class MemoryList:
             return ValueError(f"Opcode mode {mode} is not supported")
 
     def get_memory_output(self):
-        return max(self.memory_outputs)
+        return self.memory_outputs[-1]
 
     def get_program(self):
         return [digit.value for digit in self.memory]

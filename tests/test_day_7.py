@@ -118,7 +118,7 @@ def test_integration_examples_part_2():
                 5,
             ],
         ).run([9, 8, 7, 6, 5])
-        == 139629729
+        == 129
     )
 
     assert (
@@ -183,5 +183,5 @@ def test_integration_examples_part_2():
                 10,
             ],
         ).run([9, 8, 7, 6, 5])
-        == 18216
+        == 20
     )
